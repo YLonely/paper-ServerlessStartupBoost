@@ -1,0 +1,73 @@
+\section{introduction}
+
+Serverless computing is another popular trend in the current cloud computing field.
+Unlike the traditional IaaS\cite{iaas} or PaaS\cite{paas},
+which relies on cloud users to manage virtual machines or configure the capacity and automatic scaling of applications.
+Serverless computing delegates all the work of managing virtual machines, execution environments, and software environments to the cloud provider.
+Cloud providers makes all the infrastructure management operations transparent to cloud users,
+and users only need to focus on writing related functions, which frees users from the trouble of managing servers.
+At the same time, serverless computing provides users with a more fine-grained billing model,
+which charges based on the actual amount of resources consumed when providing services.
+In the Function-as-a-Service(FaaS)\cite{berkeley-view} incarnation of the serverless model,
+the smallest unit of calculation used is a serverless function written by the user.
+When the serverless computing platform receives a service request or a predefined event is triggered,
+the serverless computing platform will initialize a temporary execution sandbox(containers or virtual machines, etc.),
+and run the function uploaded by the user in the sandbox to process the request. After the execution, the sandbox will be destroyed,
+and the occupied resources will be recycled for the next request.
+
+Currently serverless computing has been supported by many platforms, including Amazon Lambda\cite{amazon}, IBM Cloud Function\cite{ibm},
+Microsoft Azure Functions\cite{microsoft} and Google Cloud Functions\cite{google}.
+At the same time, serverless computing has also developed rapidly in the open source community.
+Serverless computing platforms represented by open source projects such as OpenFaaS\cite{openfaas}, Kubeless\cite{kubeless}, and Knative\cite{knative} have received a lot of attention.
+
+Since serverless computing uses an event-driven approach to handle requests,
+that is, when each request comes,
+a new serverless function is started to process it,
+which places high requirements on the efficiency of serverless functions.
+The current containerized serverless functions failed to achieve the low startup
+latency due to the creation of the isolation environment and the initialization
+of the software environment.
+The figure\ref{default-proportion} shows the "Execution and Startup/Overall" ratio of five typical serverless
+computing applications which are tested on the OpenFaas platform, thoes applications run on different language runtimes.
+The experiment shows that on average, the execution latency only accounted for 31\% of overall latency,
+at the same time, the overall latency of containerized serverless functions is usually over 100 milliseconds(as shown in the table\ref{overall-latency}),
+which obviously cannot meet the high-performance requirements of serverless computing platforms.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=3in]{images/default-proportion.png}
+    \caption{Execution(and Startup)/Overall latency ratio of serverless functions.}
+    \label{default-proportion}
+\end{figure}
+
+\begin{table}[htbp]
+    \centering
+    \caption{The Overall latency}
+    \begin{tabular}{cc}
+        \hline
+        Type               & Time(ms) \\ \hline
+        Decompressor       & 90       \\
+        Inception          & 3035     \\
+        Meme               & 1228     \\
+        Sentiment-analysis & 320      \\
+        Search             & 2149     \\ \hline
+    \end{tabular}
+    \label{overall-latency}
+\end{table}
+
+Minimizing the startup latency of serverless functions is critical to improving the user experience of the platform\cite{serverless-user-experience-1,serverless-user-experience-2},
+and it is also one of the major challenges facing serverless computing\cite{berkeley-view,serverless-trends}.
+Existing solutions reduce the response latency of the serverless computing platform by caching function instances\cite{pool1,pool2} or customizing the virtual environment of functions\cite{firecracker,faasm},
+but these solutions cannot effectively reduce the initialization latency of the application.
+Subsequent research shows that application initialization accounts for a large part of the function startup latency.
+
+
+This paper proposes \textbf{ProjectName}, 
+a design that effectively reduces the cold start latency of containerized serverless functions. 
+\textbf{ProjectName} starts a function instance by restoring it from a checkpoint image and there by skip the initialization of serverless applications. 
+Since the different functions of one serverless computing application have the same isolation state, 
+we can achieve the purpose of boosting the initialization of the function sandbox by caching the isolation resources. 
+At the same time, because functions typically access only a small fraction of memory at runtime, 
+which allows us to enable on-demand loading of memory data through mapping strategy, 
+and furthermore, to share memory resources between multiple functions.
+
+

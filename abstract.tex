@@ -1,0 +1,9 @@
+Serverless computing is a new cloud computing execution model which enables users to focus on writing function codes without configuring and managing the hardware and software environment. 
+Serverless computing starts the isolation sandboxes for executing functions based on an event-driven model, 
+which requires higher startup efficiency for the functions running on the serverless computing platform. 
+However, the startup of containerized serverless functions can take hundreds of milliseconds to seconds due to the creation of the isolation environment and initialization of the software environment, which does not satisfy the performance standard of the serverless computing platforms.
+
+This paper proposes a fast function startup design based on the container checkpoint/restore technique. 
+By restoring a containerized function instance from the checkpoint of previously executed function process, the time-consuming processes in the function startup phase are skipped. 
+Furthermore, two strategies are proposed to boost the restore process: 
+i) The \textit{isolation environment pooling} strategy pre-initializes and caches the namespace resources required by functions to speed up the construction process of the sandbox. ii) The \textit{memory shared mapping} strategy uses on-demand loading to restore memory data and share memory pages among multiple functions, which improves the efficiency of memory data recovery and reduces the memory footprint of functions. The evaluation shows that this paper can reduce the startup latency of the functions by up to 70\% compared to the default serverless function startup method. Furthermore, this system can significantly reduce the concurrent deployment latency and resource usage of serverless functions in the scenario of large-scale deployment of serverless functions.
