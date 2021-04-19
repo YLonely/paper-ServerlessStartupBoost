@@ -7,18 +7,10 @@ Serverless computing delegates all the work of managing virtual machines, execut
 Cloud providers makes all the infrastructure management operations transparent to cloud users,
 and users only need to focus on writing related functions, which frees users from the trouble of managing servers.
 At the same time, serverless computing provides users with a more fine-grained billing model,
-which charges based on the actual amount of resources consumed when providing services.
-In the Function-as-a-Service(FaaS)\cite{berkeley-view} incarnation of the serverless model,
-the smallest unit of calculation used is a serverless function written by the user.
-When the serverless computing platform receives a service request or a predefined event is triggered,
-the serverless computing platform will initialize a temporary execution sandbox(containers or virtual machines, etc.),
-and run the function uploaded by the user in the sandbox to process the request. After the execution, the sandbox will be destroyed,
-and the occupied resources will be recycled for the next request.
-
-Currently serverless computing has been supported by many platforms, including Amazon Lambda\cite{amazon}, IBM Cloud Function\cite{ibm},
-Microsoft Azure Functions\cite{microsoft} and Google Cloud Functions\cite{google}.
+which charges based on the actual amount of resources consumed when providing services. Currently serverless computing has been supported by many platforms, including Amazon Lambda\cite{amazon}, IBM Cloud Func\-tion\cite{ibm},
+Microsoft Azure Func\-tions\cite{microsoft} and Google Cloud Func\-tions\cite{google}.
 At the same time, serverless computing has also developed rapidly in the open source community.
-Serverless computing platforms represented by open source projects such as OpenFaaS\cite{openfaas}, Kubeless\cite{kubeless}, and Knative\cite{knative} have received a lot of attention.
+Serverless computing platforms represented by open source projects such as Open\-FaaS\cite{openfaas}, Kube\-less\cite{kubeless}, and K\-native\cite{knative} have received a lot of attention.
 
 Since serverless computing uses an event-driven approach to handle requests,
 that is, when each request comes,
@@ -67,7 +59,28 @@ a design that effectively reduces the cold start latency of containerized server
 Since the different functions of one serverless computing application have the same isolation state, 
 we can achieve the purpose of boosting the initialization of the function sandbox by caching the isolation resources. 
 At the same time, because functions typically access only a small fraction of memory at runtime, 
-which allows us to enable on-demand loading of memory data through mapping strategy, 
-and furthermore, to share memory resources between multiple functions.
+which allows us to enable on-demand loading of memory data through mapping strategy. 
+Memory mapping also allows multiple functions to share read-only memory pages, 
+which greatly reduces the memory footprint of functions in large-scale deployment scenarios.
+
+We evaluate the performance based on open source application test sets and typical serverless computing applications developed in four programming languages.
+The result shows that for all test cases, \textbf{ProjectName} can achieve <50ms startup latency, 
+10x speedup over default startup strategy 
+and 3x speedup over default restore strategy. 
+\textbf{ProjectName} can also effectively reduce the memory footprint of 
+functions by more than 90\%.
+
+We believe our work makes the following contributions:
+
+\begin{itemize}
+    \item A detailed analysis of the containerized serverless function startup process.
+    \item Several optimisation on the function restoring process to further improve the cold start efficiency of functions.
+    \item Experiments based on multiple types of serverless applications proving the effectiveness of our system.
+\end{itemize}
 
 
+The remaining sections are structured as follows: 
+Section II introduces the background and analyses the problem raised from serverless computing; 
+Section III presents the core idea of \textbf{ProjectName}; 
+Section IV shows the experimental results and Section V discusses the related work; 
+Section VI conclude our work and future directions.
