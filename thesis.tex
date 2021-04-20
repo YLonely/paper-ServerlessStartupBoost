@@ -23,6 +23,7 @@
 %%
 %% The first command in your LaTeX source must be the \documentclass command.
 \documentclass[sigconf]{acmart}
+\usepackage[tight,footnotesize]{subfigure}
 
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -162,7 +163,7 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-\input{abstract.tex} 
+\input{content/abstract.tex} 
 \end{abstract}
 
 %%
@@ -212,8 +213,9 @@
 %% This command processes the author and affiliation and title
 %% information and builds the first part of the formatted document.
 \maketitle
-\input{introduction.tex}
-\input{background.tex}
+\input{content/introduction.tex}
+\input{content/background.tex}
+\input{content/design.tex}
 
 %%
 %% The next two lines define the bibliography style to be used, and
