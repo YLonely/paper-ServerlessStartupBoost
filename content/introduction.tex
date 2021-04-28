@@ -53,9 +53,9 @@ but these solutions cannot effectively reduce the initialization latency of the 
 Subsequent research shows that application initialization accounts for a large part of the function startup latency.
 
 
-This paper proposes \textbf{ProjectName}, 
+This paper proposes \pname, 
 a design that effectively reduces the cold start latency of containerized serverless functions. 
-\textbf{ProjectName} starts a function instance by restoring it from a checkpoint image and there by skip the initialization of serverless applications. 
+\pname starts a function instance by restoring it from a checkpoint image and there by skip the initialization of serverless applications. 
 Since the different functions of one serverless computing application have the same isolation state, 
 we can achieve the purpose of boosting the initialization of the function sandbox by caching the isolation resources. 
 At the same time, because functions typically access only a small fraction of memory at runtime, 
@@ -64,10 +64,10 @@ Memory mapping also allows multiple functions to share read-only memory pages,
 which greatly reduces the memory footprint of functions in large-scale deployment scenarios.
 
 We evaluate the performance based on open source application test sets and typical serverless computing applications developed in four programming languages.
-The result shows that for all test cases, \textbf{ProjectName} can achieve <50ms startup latency, 
+The result shows that for all test cases, \pname can achieve <50ms startup latency, 
 10x speedup over default startup strategy 
 and 3x speedup over default restore strategy. 
-\textbf{ProjectName} can also effectively reduce the memory footprint of 
+\pname can also effectively reduce the memory footprint of 
 functions by more than 90\%.
 
 We believe our work makes the following contributions:
@@ -81,6 +81,6 @@ We believe our work makes the following contributions:
 
 The remaining sections are structured as follows: 
 Section II introduces the background and analyses the problem raised from serverless computing; 
-Section III presents the core idea of \textbf{ProjectName}; 
+Section III presents the core idea of \pname; 
 Section IV shows the experimental results and Section V discusses the related work; 
 Section VI conclude our work and future directions.

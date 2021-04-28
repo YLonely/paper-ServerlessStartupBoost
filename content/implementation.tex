@@ -1,0 +1,81 @@
+\section{Implementation}
+
+\pname is implemented based on containerd, runc and CRIU. 
+These components have been extended to support the optimized startup of serverless functions. 
+At the same time, the system also introduce the \textit{serverless function resources management component} to manage function namespace resources and checkpoint resources.
+
+\subsection{containerd}
+This system expands the original function startup process and function life cycle management logic of containerd. 
+The extended containerd will use the packaged client to interact with the serverless 
+function resource management component before starting the function. 
+Containerd calls the service interface of resource management component passes 
+in the function name and the required resource type, 
+such as the namespace resource type or the checkpoint resource type. For the namespace resource type, 
+it also needs to specify the detailed type of the namespace, 
+such as Mount, IPC or UTS. 
+After the call is successful, 
+the serverless function resource management component 
+will return the path and ID information of 
+the corresponding resource, 
+and containerd will record this information 
+in the description file of the function to be started. 
+The modified function life cycle management logic calls the corresponding interface of the function resource management 
+component according to the resource information recorded in 
+the description file after the function execution is completed, 
+and returns the used resources.
+
+\subsection{runc}
+
+\pname has minor changes to runc. 
+The extended runc component will convert the relevant resource information passed by 
+containerd into a form that can be recognized by CRIU before calling CRIU to start the function process.
+
+\subsection{CRIU}
+When CRIU is started, 
+it will determine whether there is the Linux namespace path information passed from runc in the startup parameters. 
+If it exists, 
+CRIU will directly use the setns system call to enter the namespace during the initialization of the namespace. 
+At the same time, 
+CRIU will determine whether the namespace type is Mount. 
+If it is, CRIU also needs to setup the \textit{proxy filesystem}. 
+The \textit{proxy filesystem} is implemented using FUSE\cite{fuse}, 
+and CRIU mounts it to \textit{/proc} directory. 
+Finally, when the CRIU initializes the memory data of the function process, 
+it will calculate and record the offset position of the memory page data from the checkpoint in the virtual memory, 
+and then use the mmap system call to map these pages to the virtual memory. 
+
+\subsection{Serverless Function Resources Management Component}
+
+As a resident service on the working node, 
+this component implements the isolation environment pooling strategy and also manages the checkpoint of serverless functions. 
+External services interact with this component through the packaged client library. 
+There are two main back-end services of this component, 
+the \textit{isolation environment resource management service} 
+manages namespace resources for serverless functions 
+and the \textit{checkpoint resource management service} manages
+checkpoint resources of serverless functions.
+When the \textit{isolation environment resource management service} starts, 
+it will start multiple sub-processes based on the relevant information of the configuration file. 
+These sub-processes will enter the new Linux namespace when they are created. 
+The child process determines how to initialize 
+the namespace by parsing the function checkpoint. 
+For example, for Mount namespace, 
+by parsing the checkpoint, 
+the child process can obtain the type of filesystems 
+that need to be mounted in the namespace. 
+Subsequently, 
+the child process will notify the main process of the resource management component 
+to open the file descriptor corresponding to the initialized namespace 
+to prevent the operating system from reclaiming the 
+resources after the child process exits. 
+At the same time, the component is also responsible for 
+reinitializing the returned namespace resources. 
+When the client requests the namespace of the function, 
+the \textit{isolation environment resource management service} will return 
+the path information of the corresponding namespace, 
+that is, the corresponding path under the directory \textit{/proc/[pid]/fd/}. 
+
+The \textit{function checkpoint resource management service}, 
+manages the checkpoint of each function. 
+it uses the containerd client to export the data of 
+the function checkpoint for unified management when it is started.

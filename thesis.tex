@@ -24,7 +24,8 @@
 %% The first command in your LaTeX source must be the \documentclass command.
 \documentclass[sigconf]{acmart}
 \usepackage[tight,footnotesize]{subfigure}
-
+\usepackage{makecell}
+\usepackage{xspace}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -73,6 +74,7 @@
 %% end of the preamble, start of the body of the document source.
 \begin{document}
 
+\newcommand\pname{\textbf{ProjectName}\xspace}
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
@@ -216,6 +218,10 @@
 \input{content/introduction.tex}
 \input{content/background.tex}
 \input{content/design.tex}
+\input{content/implementation.tex}
+\input{content/evaluation.tex}
+\input{content/related_work.tex}
+\input{content/conclusion.tex}
 
 %%
 %% The next two lines define the bibliography style to be used, and
