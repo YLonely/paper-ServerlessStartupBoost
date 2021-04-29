@@ -1,1 +1,18 @@
 \section{related work}
+Long cold start latency is still a
+serious problem in the field of serverless computing.
+In addition to the work mentioned in section \ref{section:optimization},
+there are other works dedicated to alleviating the cold start problem of serverless computing functions.
+
+SOCK\cite{sock} pre-downloads and decompresses the hot
+Python library for the Python-based serverless applications,
+reducing the delay of downloading and loading related packages.
+At the same time,
+SOCK uses the fork method to create a new container,
+which enables new containers to access pre-warmed Python interpretors,
+which further speeding up the creation of serverless containers.
+SAND\cite{sand} relaxes the isolation restrictions of serverless applications.
+Different functions of different applications are executed in different containers,
+and different functions of the same application are executed in the same container.
+Different function processes of the same type are created by forking method, 
+which improves the startup performance of serverless functions.
