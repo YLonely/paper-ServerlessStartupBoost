@@ -9,10 +9,18 @@ Python library for the Python-based serverless applications,
 reducing the delay of downloading and loading related packages.
 At the same time,
 SOCK uses the fork method to create a new container,
-which enables new containers to access pre-warmed Python interpretors,
-which further speeding up the creation of serverless containers.
+which enables new containers to access pre-warmed Python interpretors, 
+speeding up the creation of serverless containers.
 SAND\cite{sand} relaxes the isolation restrictions of serverless applications.
 Different functions of different applications are executed in different containers,
 and different functions of the same application are executed in the same container.
 Different function processes of the same type are created by forking method, 
 which improves the startup performance of serverless functions.
+
+The fork-based method requires a lot of changes to the language runtime, 
+and individual languages do not natively support 
+fork calls, so this kind of method is not universal. 
+In contrast, 
+C/S-based method proposed in this paper treats the container 
+as a black box, enabling the speeding up of arbitrary type of 
+serverless functions. 
